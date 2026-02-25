@@ -14,10 +14,10 @@ class OmdbApiClient(private val apiKey: String) {
     suspend fun searchMovies(title: String, year: String? = null): List<Film> = withContext(Dispatchers.IO) {
         try {
             val encodedTitle = URLEncoder.encode(title, "UTF-8")
-            var url = "${baseUrl}?s=\$encodedTitle&type=movie&apikey=\$apiKey"
+            var url = "${baseUrl}?s=[0m$encodedTitle&type=movie&apikey=$apiKey"
             
             if (year != null) {
-                url += "&y=\$year"
+                url += "&y=$year"
             }
 
             val response = URL(url).readText()
@@ -58,7 +58,7 @@ class OmdbApiClient(private val apiKey: String) {
 
     suspend fun getMovieDetails(imdbId: String): Map<String, String> = withContext(Dispatchers.IO) {
         try {
-            val url = "${baseUrl}?i=\$imdbId&apikey=\$apiKey"
+            val url = "${baseUrl}?i=$imdbId&apikey=$apiKey"
             val response = URL(url).readText()
             val jsonResponse = JSONObject(response)
 
