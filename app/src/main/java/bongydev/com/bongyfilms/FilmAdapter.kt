@@ -31,8 +31,8 @@ class FilmAdapter(
         val ratingsTextView = view?.findViewById<TextView>(R.id.film_ratings)
 
         titleTextView?.text = film.title
-        yearTextView?.text = "Year: ${film.year}"
-        ratingsTextView?.text = "IMDb: ${film.imdbRating} | My Rating: ${film.myRating} | Watched: ${film.watched}"
+        yearTextView?.text = "Year: \\${film.year}"
+        ratingsTextView?.text = "IMDb: \\${film.imdbRating} | My Rating: \\${film.myRating} | Watched: \\${film.watched}"
 
         // Load poster image using Glide
         if (film.posterUrl.isNotEmpty()) {
