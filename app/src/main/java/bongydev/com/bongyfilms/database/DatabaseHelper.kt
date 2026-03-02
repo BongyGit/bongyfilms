@@ -9,7 +9,7 @@ import java.io.File
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "bongyfilmsDB.db"
+        private const val DATABASE_NAME = "bongyfilms.db"
         private const val DATABASE_VERSION = 1
         private const val TABLE_FILMS = "films"
         private const val COLUMN_FILM_NUM = "filmNum"
