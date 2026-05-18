@@ -5,11 +5,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import bongydev.com.bongyfilms.models.Film
 import java.io.File
+import java.io.FileOutputStream
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "bongyfilms.db"
+        private const val DATABASE_NAME = "bongyfilmsDB.db"
         private const val DATABASE_VERSION = 1
         private const val TABLE_FILMS = "films"
         private const val COLUMN_FILM_NUM = "filmNum"
@@ -23,8 +24,44 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     private val context = context
 
+    init {
+        // Initialize the database by copying from assets if needed
+        initializeDatabase()
+    }
+
+    /**
+     * Initialize the database by copying from assets folder if it doesn't exist in private app storage
+     */
+    private fun initializeDatabase() {
+        val dbFile = File(context.getDatabasePath(DATABASE_NAME).absolutePath)
+        
+        // If database doesn't exist, copy it from assets
+        if (!dbFile.exists()) {
+            try {
+                // Create the databases directory if it doesn't exist
+                dbFile.parentFile?.mkdirs()
+                
+                // Copy the database from assets to the app's private database folder
+                val inputStream = context.assets.open(DATABASE_NAME)
+                val outputStream = FileOutputStream(dbFile)
+                
+                val buffer = ByteArray(1024)
+                var length: Int
+                while (inputStream.read(buffer).also { length = it } > 0) {
+                    outputStream.write(buffer, 0, length)
+                }
+                
+                outputStream.flush()
+                outputStream.close()
+                inputStream.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     override fun onCreate(db: SQLiteDatabase) {
-        // Database already exists in external storage, no need to create
+        // Database is pre-created and copied from assets, no need to create
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -33,9 +70,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun getAllFilms(): List<Film> {
         val films = mutableListOf<Film>()
-        val db = getExternalDatabase()
+        val db = readableDatabase
         
-        db?.use {
+        db.use {
             val cursor = it.query(
                 TABLE_FILMS,
                 null,
@@ -74,9 +111,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     fun getFilmById(filmNum: Int): Film? {
-        val db = getExternalDatabase()
+        val db = readableDatabase
         
-        db?.use {
+        db.use {
             val cursor = it.query(
                 TABLE_FILMS,
                 null,
@@ -114,9 +151,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     fun updateFilmRatings(filmNum: Int, myRating: Int, watched: String) {
-        val db = getExternalDatabase()
+        val db = writableDatabase
         
-        db?.use {
+        db.use {
             val contentValues = android.content.ContentValues().apply {
                 put(COLUMN_MY_RATING, myRating)
                 put(COLUMN_WATCHED, watched)
@@ -132,9 +169,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     fun addFilm(film: Film) {
-        val db = getExternalDatabase()
+        val db = writableDatabase
         
-        db?.use {
+        db.use {
             val contentValues = android.content.ContentValues().apply {
                 put(COLUMN_TITLE, film.title)
                 put(COLUMN_YEAR, film.year)
@@ -145,21 +182,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             }
             
             it.insert(TABLE_FILMS, null, contentValues)
-        }
-    }
-
-    private fun getExternalDatabase(): SQLiteDatabase? {
-        val dbPath = "/storage/emulated/0/Android/data/bongyfilms/filmdata/bongyfilmsDB.db"
-        val dbFile = File(dbPath)
-        
-        return if (dbFile.exists()) {
-            try {
-                SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE)
-            } catch (e: Exception) {
-                null
-            }
-        } else {
-            null
         }
     }
 }
