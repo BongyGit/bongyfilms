@@ -35,7 +35,7 @@
 
 3. Verify the database contains the "films" table with all required fields:
 - filmNum (INTEGER PRIMARY KEY AUTOINCREMENT)
-- title (TEXT)
+- title (REAL)
 - year (TEXT)
 - watched (TEXT)
 - imdbRating (NUMERIC)
