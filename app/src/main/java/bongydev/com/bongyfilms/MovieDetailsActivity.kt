@@ -84,11 +84,14 @@ class MovieDetailsActivity : AppCompatActivity() {
         imdbRatingTextView.text = "IMDb Rating: ${film.imdbRating}"
 
         // Load poster
-        if (film.posterUrl.isNotEmpty()) {
+        val posterUrl = if (film.posterUrl.isNotEmpty()) film.posterUrl else movieDetails["Poster"]
+        if (!posterUrl.isNullOrEmpty() && posterUrl != "N/A") {
             Glide.with(this)
-                .load(film.posterUrl)
+                .load(posterUrl)
                 .placeholder(R.drawable.ic_placeholder)
                 .into(posterImageView)
+        } else {
+            posterImageView.setImageResource(R.drawable.ic_placeholder)
         }
 
         // Setup My Rating Spinner
@@ -118,13 +121,13 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun showSaveDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Save Changes?")
-            .setMessage("You have made changes. Do you want to save?")
+            .setTitle("Made any Changes?")
+            .setMessage("If you've made changes. Do you want to save?")
             .setPositiveButton("Save") { _, _ ->
                 saveChanges()
                 finish()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.cancel()
                 finish()
             }
