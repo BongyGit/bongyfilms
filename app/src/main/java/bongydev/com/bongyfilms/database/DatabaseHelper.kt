@@ -101,7 +101,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                         imdbRating = imdbRating,
                         myRating = myRating,
                         imdbID = imdbID,
-                        posterUrl = "" // Will be fetched from OMDb API
+                        posterUrl = "", // Will be fetched from TMDB API
+                        plot = "N/A",
+                        genre = "N/A"
                     ))
                 }
             }
@@ -141,13 +143,31 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                         imdbRating = imdbRating,
                         myRating = myRating,
                         imdbID = imdbID,
-                        posterUrl = ""
+                        posterUrl = "",
+                        plot = "N/A",
+                        genre = "N/A"
                     )
                 }
             }
         }
         
         return null
+    }
+
+    fun getNextFilmNum(): Int {
+        val db = readableDatabase
+        
+        db.use {
+            val cursor = it.rawQuery("SELECT MAX($COLUMN_FILM_NUM) as max_num FROM $TABLE_FILMS", null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val maxNum = it.getInt(it.getColumnIndexOrThrow("max_num"))
+                    return maxNum + 1
+                }
+            }
+        }
+        
+        return 1
     }
 
     fun updateFilmRatings(filmNum: Int, myRating: Int, watched: String) {
@@ -157,6 +177,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val contentValues = android.content.ContentValues().apply {
                 put(COLUMN_MY_RATING, myRating)
                 put(COLUMN_WATCHED, watched)
+            }
+            
+            it.update(
+                TABLE_FILMS,
+                contentValues,
+                "$COLUMN_FILM_NUM = ?",
+                arrayOf(filmNum.toString())
+            )
+        }
+    }
+
+    fun updateFilmPoster(filmNum: Int, posterUrl: String) {
+        val db = writableDatabase
+        
+        db.use {
+            val contentValues = android.content.ContentValues().apply {
+                put("posterUrl", posterUrl)
             }
             
             it.update(
