@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
 import bongydev.com.bongyfilms.database.DatabaseHelper
 import bongydev.com.bongyfilms.models.Film
-import bongydev.com.bongyfilms.network.OmdbApiClient
+import bongydev.com.bongyfilms.network.TmdbApiClient
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class MovieDetailsActivity : AppCompatActivity() {
 
     private lateinit var databaseHelper: DatabaseHelper
-    private lateinit var apiClient: OmdbApiClient
+    private lateinit var apiClient: TmdbApiClient
     private var filmId: Int = 0
     private var imdbId: String = ""
     private var originalMyRating: Int = 0
@@ -32,7 +32,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_movie_details)
 
         databaseHelper = DatabaseHelper(this)
-        apiClient = OmdbApiClient("8d7b2328")
+        apiClient = TmdbApiClient("e04f7d260ec670160a9d2aaa7f9a3bef")
 
         filmId = intent.getIntExtra("film_id", 0)
         imdbId = intent.getStringExtra("imdb_id") ?: ""
@@ -55,10 +55,10 @@ class MovieDetailsActivity : AppCompatActivity() {
             originalMyRating = film.myRating
             originalWatched = film.watched
 
-            // Fetch additional details from OMDb API
+            // Fetch additional details from TMDB API using imdbID as external ID
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    val movieDetails = apiClient.getMovieDetails(imdbId)
+                    val movieDetails = apiClient.getMovieDetailsByImdbId(imdbId)
                     displayMovieDetails(film, movieDetails)
                 } catch (e: Exception) {
                     Toast.makeText(this@MovieDetailsActivity, "Error loading movie details", Toast.LENGTH_SHORT).show()
@@ -77,14 +77,14 @@ class MovieDetailsActivity : AppCompatActivity() {
         val myRatingSpinner = findViewById<Spinner>(R.id.movie_my_rating_spinner)
         val watchedSpinner = findViewById<Spinner>(R.id.movie_watched_spinner)
 
-        titleTextView.text = film.title
-        yearTextView.text = "Year: ${film.year}"
+        titleTextView.text = movieDetails["Title"] ?: film.title
+        yearTextView.text = "Year: ${movieDetails["Year"] ?: film.year}"
         genreTextView.text = "Genre: ${movieDetails["Genre"] ?: "N/A"}"
         plotTextView.text = "Plot: ${movieDetails["Plot"] ?: "N/A"}"
-        imdbRatingTextView.text = "IMDb Rating: ${film.imdbRating}"
+        imdbRatingTextView.text = "IMDb Rating: ${movieDetails["imdbRating"] ?: film.imdbRating}"
 
         // Load poster
-        val posterUrl = if (film.posterUrl.isNotEmpty()) film.posterUrl else movieDetails["Poster"]
+        val posterUrl = movieDetails["Poster"]
         if (!posterUrl.isNullOrEmpty() && posterUrl != "N/A") {
             Glide.with(this)
                 .load(posterUrl)
