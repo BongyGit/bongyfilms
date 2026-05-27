@@ -67,7 +67,7 @@ class AddMovieActivity : AppCompatActivity() {
                     Toast.makeText(this@AddMovieActivity, "No movie found, try again", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AddMovieActivity, "Error searching movies: ${'$'}{e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddMovieActivity, "Error searching movies: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -75,7 +75,7 @@ class AddMovieActivity : AppCompatActivity() {
     private fun showAddConfirmDialog(movie: Film) {
         AlertDialog.Builder(this)
             .setTitle("Add to My Films?")
-            .setMessage("${'$'}{movie.title} (${movie.year})")
+            .setMessage("${movie.title} (${movie.year})")
             .setPositiveButton("Save") { _, _ ->
                 addMovieToDatabase(movie)
             }
@@ -86,8 +86,9 @@ class AddMovieActivity : AppCompatActivity() {
     }
 
     private fun addMovieToDatabase(movie: Film) {
+        val nextFilmNum = databaseHelper.getNextFilmNum()
         val newFilm = Film(
-            filmNum = 0,
+            filmNum = nextFilmNum,
             title = movie.title,
             year = movie.year,
             watched = "N",
