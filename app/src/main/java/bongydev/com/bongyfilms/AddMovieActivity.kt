@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
 import bongydev.com.bongyfilms.database.DatabaseHelper
 import bongydev.com.bongyfilms.models.Film
-import bongydev.com.bongyfilms.network.OmdbApiClient
+import bongydev.com.bongyfilms.network.TmdbApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class AddMovieActivity : AppCompatActivity() {
 
     private lateinit var databaseHelper: DatabaseHelper
-    private lateinit var apiClient: OmdbApiClient
+    private lateinit var apiClient: TmdbApiClient
     private lateinit var searchResultsListView: ListView
     private var searchResults: MutableList<Film> = mutableListOf()
 
@@ -26,7 +26,7 @@ class AddMovieActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_movie)
 
         databaseHelper = DatabaseHelper(this)
-        apiClient = OmdbApiClient("8d7b2328")
+        apiClient = TmdbApiClient("e04f7d260ec670160a9d2aaa7f9a3bef")
 
         val searchTitleInput = findViewById<EditText>(R.id.search_title_input)
         val searchYearInput = findViewById<EditText>(R.id.search_year_input)
@@ -95,7 +95,9 @@ class AddMovieActivity : AppCompatActivity() {
             imdbRating = movie.imdbRating,
             myRating = 0,
             imdbID = movie.imdbID,
-            posterUrl = movie.posterUrl
+            posterUrl = movie.posterUrl,
+            plot = movie.plot,
+            genre = movie.genre
         )
 
         databaseHelper.addFilm(newFilm)
