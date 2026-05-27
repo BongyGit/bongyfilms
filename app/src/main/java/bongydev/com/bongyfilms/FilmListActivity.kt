@@ -12,12 +12,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
 import bongydev.com.bongyfilms.database.DatabaseHelper
 import bongydev.com.bongyfilms.models.Film
+import bongydev.com.bongyfilms.network.OmdbApiClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FilmListActivity : AppCompatActivity() {
 
     private lateinit var filmListView: ListView
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var filmAdapter: FilmAdapter
+    private lateinit var apiClient: OmdbApiClient
     private var allFilms: MutableList<Film> = mutableListOf()
     private var filteredFilms: MutableList<Film> = mutableListOf()
 
@@ -26,6 +31,7 @@ class FilmListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_film_list)
 
         databaseHelper = DatabaseHelper(this)
+        apiClient = OmdbApiClient("8d7b2328")
         filmListView = findViewById(R.id.film_list_view)
 
         val searchButton = findViewById<Button>(R.id.search_button)
@@ -63,6 +69,37 @@ class FilmListActivity : AppCompatActivity() {
         allFilms = databaseHelper.getAllFilms().toMutableList()
         filteredFilms = allFilms.toMutableList()
         updateListView()
+        fetchMissingPosters()
+    }
+
+    private fun fetchMissingPosters() {
+        val filmsToUpdate = allFilms.filter { it.posterUrl.isEmpty() && it.imdbID.isNotEmpty() }
+        if (filmsToUpdate.isNotEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                filmsToUpdate.forEach { film ->
+                    try {
+                        val details = apiClient.getMovieDetails(film.imdbID)
+                        val posterUrl = details["Poster"]
+                        if (!posterUrl.isNullOrEmpty() && posterUrl != "N/A") {
+                            databaseHelper.updateFilmPoster(film.filmNum, posterUrl)
+                            // Update the local list as well
+                            val index = allFilms.indexOfFirst { it.filmNum == film.filmNum }
+                            if (index != -1) {
+                                allFilms[index] = film.copy(posterUrl = posterUrl)
+                                // If it's in the filtered list, update it there too
+                                val filteredIndex = filteredFilms.indexOfFirst { it.filmNum == film.filmNum }
+                                if (filteredIndex != -1) {
+                                    filteredFilms[filteredIndex] = allFilms[index]
+                                    filmAdapter.notifyDataSetChanged()
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
     }
 
     private fun updateListView() {
