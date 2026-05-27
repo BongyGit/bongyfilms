@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/search_title_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter movie title"
+        android:textSize="16sp"
+        android:paddingVertical="12dp" />
+
+    <EditText
+        android:id="@+id/search_year_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter year (optional)"
+        android:textSize="16sp"
+        android:inputType="number"
+        android:layout_marginTop="12dp"
+        android:paddingVertical="12dp" />
+
+    <Button
+        android:id="@+id/search_movie_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center" />
+
+    <ListView
+        android:id="@+id/search_results_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go Back"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp" />
+
+</LinearLayout>
