@@ -8,5 +8,7 @@ data class Film(
     val imdbRating: Double,
     val myRating: Int,
     val imdbID: String,
-    val posterUrl: String = ""
+    val posterUrl: String = "",
+    val plot: String = "N/A",
+    val genre: String = "N/A"
 )
