@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/movie_poster"
+            android:layout_width="150dp"
+            android:layout_height="220dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="center"
+            android:contentDescription="Movie Poster" />
+
+        <TextView
+            android:id="@+id/movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:text="Movie Title" />
+
+        <TextView
+            android:id="@+id/movie_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:text="Year: 2024" />
+
+        <TextView
+            android:id="@+id/movie_genre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:text="Genre: Action, Drama" />
+
+        <TextView
+            android:id="@+id/movie_plot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:text="Plot: " />
+
+        <TextView
+            android:id="@+id/movie_imdb_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            android:text="IMDb Rating: 8.0"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Rating:"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/movie_my_rating_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watched:"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/movie_watched_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go Back"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+</ScrollView>

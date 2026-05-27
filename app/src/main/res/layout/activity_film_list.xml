@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp">
+
+            <Button
+                android:id="@+id/search_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Search"
+                android:textSize="11sp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="4dp" />
+
+            <Button
+                android:id="@+id/sort_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sort"
+                android:textSize="11sp"
+                android:layout_marginHorizontal="2dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="4dp" />
+
+            <Button
+                android:id="@+id/filter_rating_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="By Rating"
+                android:textSize="11sp"
+                android:layout_marginHorizontal="2dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="4dp" />
+
+            <Button
+                android:id="@+id/filter_watched_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:text="Watched"
+                android:textSize="11sp"
+                android:layout_marginHorizontal="2dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="4dp" />
+
+            <Button
+                android:id="@+id/add_movie_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="+"
+                android:textSize="24sp"
+                android:padding="0dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:gravity="center" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ListView
+        android:id="@+id/film_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
+
+</LinearLayout>
