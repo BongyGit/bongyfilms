@@ -16,17 +16,18 @@ class BackupActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
             if (uri != null) {
                 try {
-                    // Get the file path from the URI
-                    val file = File(uri.path ?: return@registerForActivityResult)
+                    // Get the file from content URI
+                    val file = if (uri.scheme == "content") {
+                        // For content URIs, we need to get the real path or use the content resolver
+                        getRealPathFromURI(uri) ?: File(uri.path ?: "")
+                    } else {
+                        File(uri.path ?: "")
+                    }
                     
                     // Perform the backup
-                    val (success, message) = backupRestoreManager.backupDatabase(file)
+                    val (success, message) = backupRestoreManager.backupDatabaseToUri(uri)
                     
-                    if (success) {
-                        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-                    }
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
                     Toast.makeText(
                         this,
@@ -63,4 +64,18 @@ class BackupActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    private fun getRealPathFromURI(uri: android.net.Uri): String? {
+        var cursor: android.database.Cursor? = null
+        return try {
+            val projection = arrayOf(android.provider.MediaStore.Images.ImageColumns.DATA)
+            cursor = contentResolver.query(uri, projection, null, null, null)
+            val columnIndex = cursor?.getColumnIndexOrThrow(android.provider.MediaStore.Images.ImageColumns.DATA)
+            cursor?.moveToFirst()
+            if (columnIndex != null) cursor?.getString(columnIndex) else null
+        } finally {
+            cursor?.close()
+        }
+    }
 }
+
