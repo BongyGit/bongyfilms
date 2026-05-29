@@ -31,8 +31,8 @@ class RestoreActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        // Perform the restore
-                        val (success, message) = backupRestoreManager.restoreDatabaseFromUri(uri)
+                        // Perform the restore using content URI
+                        val (success, message) = backupRestoreManager.restoreDatabaseFromUri(this, uri)
                         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                     }
                 } catch (e: Exception) {
